@@ -1,17 +1,24 @@
 <?php
 
+use TileCache\TileLayerList;
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new Silex\Application();
 
-$app->get('/{z}/{x}/{y}.png', function (int $z, int $x, int $y) {
-    $path = '../cache/osmde/'.$z.'/'.$x.'/';
+$app->get('/{layer}/{z}/{x}/{y}.png', function (Silex\Application $app, string $layer, int $z, int $x, int $y)
+{
+    $tileLayerList = new TileLayerList();
+
+    if (!$tileLayerList->layerExists($layer)) {
+        $app->abort(404, 'Tilelayer '.$layer.' is not registered');
+    }
+
+    $path = '../cache/'.$layer.'/'.$z.'/'.$x.'/';
     $filename = $path.$y.'.png';
 
     if (!file_exists($filename)) {
-        $server = chr(rand(97, 100));
-
-        $source = 'http://'.$server.'.tile.openstreetmap.de/tiles/osmde/'.$z.'/'.$x.'/'.$y.'.png';
+        $source = $tileLayerList->resolveSource($layer, $x, $y, $z);
 
         mkdir($path, 0777, true);
 
