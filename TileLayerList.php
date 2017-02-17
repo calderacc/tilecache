@@ -9,7 +9,8 @@ class TileLayerList
     public function __construct()
     {
         $this->layers = [
-            'osmde' => 'http://{a}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'
+            'osmde' => 'http://{a}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+            'wikimedia-map' => 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
         ];
     }
 
