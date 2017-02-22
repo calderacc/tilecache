@@ -1,5 +1,6 @@
 <?php
 
+use Curl\Curl;
 use TileCache\TileLayerList;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -21,6 +22,11 @@ $app->get('/{layer}/{z}/{x}/{y}.png', function (Silex\Application $app, string $
         $source = $tileLayerList->resolveSource($layer, $x, $y, $z);
 
         mkdir($path, 0777, true);
+
+        $curl = new Curl();
+        $curl->setUserAgent('Caldera Tilecache https://github.com/calderacc/tilecache, contact '.$_SERVER['SERVER_ADMIN']);
+        $curl->setReferer($_SERVER['SERVER_NAME']);
+        $curl->get($source);
 
         $tile = file_get_contents($source);
 
